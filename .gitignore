@@ -1,0 +1,20 @@
+# secrets
+.env
+
+# real financial data
+data/
+
+# sbt / scala
+target/
+project/target/
+project/project/
+.bsp/
+.metals/
+.bloop/
+.scala-build/
+metals.sbt
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store

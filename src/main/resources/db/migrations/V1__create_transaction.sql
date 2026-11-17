@@ -1,0 +1,21 @@
+CREATE TABLE mono_transaction (
+    id text PRIMARY KEY,
+    account_id text NOT NULL,
+    occurred_at timestamptz NOT NULL,
+    description text NOT NULL,
+    mcc int NOT NULL,
+    original_mcc int NOT NULL,
+    hold bool NOT NULL,
+    amount bigint NOT NULL,
+    operation_amount bigint NOT NULL,
+    currency_code int NOT NULL,
+    commission_rate bigint NOT NULL,
+    cashback_amount bigint NOT NULL,
+    balance bigint NOT NULL,
+    comment text,
+    receipt_id text,
+    invoice_id text,
+    counter_edrpou text,
+    counter_iban text,
+    counter_name text
+);
