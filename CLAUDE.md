@@ -9,7 +9,7 @@ I'm a Scala developer. The point of the project is to fill gaps in my fundamenta
 - transactions, isolation, locking;
 - complex queries: window functions, recursive queries, `EXPLAIN`, indexes;
 - complex data transformations: imports, cleaning, record linkage;
-- functional programming in Scala (monads in practice via doobie/Skunk);
+- functional programming in Scala (effects in practice via ZIO);
 - modular project structure (how modules fit together).
 
 The main criterion is understanding and enjoyment, not speed.
@@ -77,9 +77,10 @@ A report is a measure (sum, count, average ticket) plus dimension breakdowns, fi
 
 ## Stack
 
-- Scala 3. Start with scala-cli; move to sbt or Mill once multiple modules are needed.
-- PostgreSQL in Docker.
-- DB access: doobie or Skunk (decide along the way).
+- Scala 3, built with sbt. A single module for now; split into sbt subprojects when needed.
+- Effects and FP: ZIO 2 (zio, zio-config with typesafe/magnolia, zio-json, zio-http).
+- PostgreSQL in Docker (`compose.yaml`).
+- DB access: Quill (`quill-jdbc-zio`) over the PostgreSQL JDBC driver. Schema migrations live in `src/main/resources/db/migrations` (`V<n>__*.sql`).
 - Frontend to start with: server-rendered HTML + htmx. A rich TypeScript UI later, if needed.
 - For quick data exploration: `curl` + `jq`, a SQL console.
 
@@ -101,8 +102,6 @@ Each layer is added when the system grows into it.
 ## Session format
 
 - 30–45 minutes, 5 days a week, never skip two days in a row.
-- After each session, an entry in `log.md`: what I did / what clicked or is still unclear / "tomorrow I start with ___".
-- Ideas and features for later go to `later.md` instead of switching right away.
 
 ## Security and privacy
 
@@ -112,6 +111,8 @@ Each layer is added when the system grows into it.
 
 ## Current state
 
-Step 0: get a Monobank token, pull a one-month statement, look at the JSON, and design the first schema from it together.
+Layer 1 is in progress:
+- Migrations exist for `transaction`, `raw_mono_statement`, and `mono_account`.
+- The Monobank integration is being built in `app.budget.mono` (`MonobankService`, `MonoRepo`/`MonoRepoLive`, `RawMonoStatement`), with ZIO config in `config/Configuration.scala` and `application.conf`.
 
 The project doesn't have a name yet.
