@@ -1,6 +1,6 @@
-package app.budget.mono
+package app.budget.mono.model
 
-import zio.json.JsonDecoder
+import app.budget.mono.model.*
 import zio.schema.{DeriveSchema, Schema}
 
 case class MonoClientInfo(
@@ -13,5 +13,5 @@ case class MonoClientInfo(
 )
 
 object MonoClientInfo:
-  implicit val personSchema: Schema[MonoClientInfo] = DeriveSchema.gen[MonoClientInfo]
-
+  implicit val personSchema: Schema[MonoClientInfo] =
+    DeriveSchema.gen[MonoClientInfo]

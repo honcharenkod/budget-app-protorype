@@ -14,4 +14,6 @@ class MonoServiceLive(client: MonoClient, repo: MonoRepo) extends MonoService:
 
 object MonoServiceLive:
   val layer: ZLayer[MonoClient & MonoRepo, Nothing, MonoServiceLive] =
-    ZLayer.fromFunction((monoClient: MonoClient, monoRepo: MonoRepo) => new MonoServiceLive(monoClient, monoRepo))
+    ZLayer.fromFunction((monoClient: MonoClient, monoRepo: MonoRepo) =>
+      new MonoServiceLive(monoClient, monoRepo)
+    )

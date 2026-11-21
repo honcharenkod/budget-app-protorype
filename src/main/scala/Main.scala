@@ -1,4 +1,10 @@
-import app.budget.mono.{MonoClientLive, MonoRepo, MonoRepoLive, MonoService, MonoServiceLive}
+import app.budget.mono.{
+  MonoClientLive,
+  MonoRepo,
+  MonoRepoLive,
+  MonoService,
+  MonoServiceLive
+}
 import config.Configuration
 import io.getquill.SnakeCase
 import io.getquill.jdbczio.Quill

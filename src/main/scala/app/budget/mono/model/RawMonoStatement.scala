@@ -1,4 +1,4 @@
-package app.budget.mono
+package app.budget.mono.model
 
 import zio.json.ast.Json
 

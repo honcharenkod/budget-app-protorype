@@ -1,5 +1,6 @@
 package app.budget.mono
 
+import app.budget.mono.model.{MonoAccount, RawMonoStatement}
 import io.getquill.jdbczio.Quill
 import zio.{IO, ZLayer}
 import io.getquill.*
@@ -14,16 +15,20 @@ final case class MonoRepoLive(quill: Quill.Postgres[SnakeCase])
   import quill._
 
   private given Encoder[Json] =
-    encoder(Types.OTHER, (index, value, row) =>
-      val pg = PGobject()
-      pg.setType("jsonb")
-      pg.setValue(value.toString)
-      row.setObject(index, pg)
+    encoder(
+      Types.OTHER,
+      (index, value, row) =>
+        val pg = PGobject()
+        pg.setType("jsonb")
+        pg.setValue(value.toString)
+        row.setObject(index, pg)
     )
 
   private given Decoder[Json] =
     decoder((index, row, _) =>
-      row.getString(index).fromJson[Json]
+      row
+        .getString(index)
+        .fromJson[Json]
         .fold(err => throw IllegalStateException(err), identity)
     )
 
@@ -34,6 +39,5 @@ final case class MonoRepoLive(quill: Quill.Postgres[SnakeCase])
     run(query[MonoAccount].insertValue(lift(account)))
 
 object MonoRepoLive:
-
   val layer: ZLayer[Quill.Postgres[SnakeCase], Nothing, MonoRepo] =
     ZLayer.fromFunction(MonoRepoLive(_))
