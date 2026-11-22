@@ -1,8 +1,9 @@
 package app.budget.mono
 
-import app.budget.mono.model.{MonoAccount, RawMonoStatement}
+import app.budget.mono.model.MonoAccount
+import app.budget.mono.model.domain.{NewRawMonoStatement, RawMonoStatement}
 import io.getquill.jdbczio.Quill
-import zio.{IO, ZLayer}
+import zio.{IO, ZIO, ZLayer}
 import io.getquill.*
 import org.postgresql.util.PGobject
 import zio.json.DecoderOps
@@ -32,15 +33,17 @@ final case class MonoRepoLive(quill: Quill.Postgres[SnakeCase])
         .fold(err => throw IllegalStateException(err), identity)
     )
 
-  def saveRaw(raw: RawMonoStatement): IO[SQLException, Long] =
+  def saveRaw(raw: NewRawMonoStatement): IO[SQLException, Long] =
     run(
-      query[RawMonoStatement].insertValue(lift(raw))
-      .onConflictIgnore(_.accountId, _.periodFrom, _.periodTo)
+      query[NewRawMonoStatement]
+        .insertValue(lift(raw))
+        .onConflictIgnore
     )
 
   def createUserAccount(account: MonoAccount): IO[SQLException, Long] =
     run(
-      query[MonoAccount].insertValue(lift(account))
+      query[MonoAccount]
+        .insertValue(lift(account))
         .onConflictIgnore(_.id)
     )
 

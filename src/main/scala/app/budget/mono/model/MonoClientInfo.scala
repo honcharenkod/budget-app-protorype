@@ -13,5 +13,5 @@ case class MonoClientInfo(
 )
 
 object MonoClientInfo:
-  implicit val personSchema: Schema[MonoClientInfo] =
+  implicit val schema: Schema[MonoClientInfo] =
     DeriveSchema.gen[MonoClientInfo]

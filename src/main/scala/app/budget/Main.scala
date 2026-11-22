@@ -1,6 +1,8 @@
-import app.budget.mono.{MonoClientLive, MonoRepo, MonoRepoLive, MonoService, MonoServiceLive}
-import config.Configuration
-import db.TransactorLive
+package app.budget
+
+import app.budget.config.Configuration
+import app.budget.db.TransactorLive
+import app.budget.mono.*
 import io.getquill.SnakeCase
 import io.getquill.jdbczio.Quill
 import zio.*

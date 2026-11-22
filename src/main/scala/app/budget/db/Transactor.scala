@@ -1,4 +1,4 @@
-package db
+package app.budget.db
 
 import io.getquill.SnakeCase
 import io.getquill.jdbczio.Quill

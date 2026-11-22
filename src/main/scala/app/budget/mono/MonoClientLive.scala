@@ -1,13 +1,15 @@
 package app.budget.mono
 
+import app.budget.config.Configuration
+import app.budget.mono.model.api.StatementItem
 import app.budget.mono.model.MonoClientInfo
-import config.Configuration
+import app.budget.mono.model.domain.RawMonoStatement
+import app.budget.utils.TimeUtils.DateRange
 import zio.*
 import zio.http.*
-import zio.json.*
 
 class MonoClientLive(client: Client, apiKey: String) extends MonoClient:
-  val api =
+  private val api =
     client
       .url(url"https://api.monobank.ua")
       .addHeader("X-Token", apiKey)
@@ -16,6 +18,17 @@ class MonoClientLive(client: Client, apiKey: String) extends MonoClient:
     for
       response <- api.batched(Request.get(s"/personal/client-info"))
       body <- response.body.asJson[MonoClientInfo]
+    yield body
+
+  def getPersonalStatement(
+      accountId: String,
+      range: DateRange
+  ): Task[List[StatementItem]] =
+    for
+      response <- api.batched(
+        Request.get(s"/personal/statement/$accountId/${range.from.toEpochMilli}/${range.to.toEpochMilli}")
+      )
+      body <- response.body.asJson[List[StatementItem]]
     yield body
 
 object MonoClientLive:

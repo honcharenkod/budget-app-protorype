@@ -12,6 +12,7 @@ val zioConfig = "4.1.2"
 libraryDependencies ++= Seq(
   "dev.zio" %% "zio" % zioVersion,
   "dev.zio" %% "zio-json" % "1.0.0", // must match what zio-http's zio-schema-json was built against
+  "dev.zio" %% "zio-logging" % "2.5.5",
   "dev.zio" %% "zio-config" % zioConfig,
   "dev.zio" %% "zio-config-typesafe" % zioConfig,
   "dev.zio" %% "zio-config-magnolia" % zioConfig,
