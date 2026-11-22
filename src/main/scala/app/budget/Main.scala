@@ -11,10 +11,10 @@ import zio.http.ZClient
 
 object Main extends ZIOAppDefault:
 
-  override val bootstrap =
+  override val bootstrap: ZLayer[Any, Nothing, Unit] =
     Runtime.setConfigProvider(TypesafeConfigProvider.fromResourcePath())
 
-  val run =
+  val run: Task[Unit] =
     val program =
       for
         monoService <- ZIO.service[MonoService]
