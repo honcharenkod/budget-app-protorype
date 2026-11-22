@@ -1,11 +1,6 @@
-import app.budget.mono.{
-  MonoClientLive,
-  MonoRepo,
-  MonoRepoLive,
-  MonoService,
-  MonoServiceLive
-}
+import app.budget.mono.{MonoClientLive, MonoRepo, MonoRepoLive, MonoService, MonoServiceLive}
 import config.Configuration
+import db.TransactorLive
 import io.getquill.SnakeCase
 import io.getquill.jdbczio.Quill
 import zio.*
@@ -31,5 +26,6 @@ object Main extends ZIOAppDefault:
       MonoRepoLive.layer,
       ZClient.default,
       MonoClientLive.layer,
-      MonoServiceLive.layer
+      MonoServiceLive.layer,
+      TransactorLive.layer
     )

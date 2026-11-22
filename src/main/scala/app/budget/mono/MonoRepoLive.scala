@@ -33,10 +33,16 @@ final case class MonoRepoLive(quill: Quill.Postgres[SnakeCase])
     )
 
   def saveRaw(raw: RawMonoStatement): IO[SQLException, Long] =
-    run(query[RawMonoStatement].insertValue(lift(raw)))
+    run(
+      query[RawMonoStatement].insertValue(lift(raw))
+      .onConflictIgnore(_.accountId, _.periodFrom, _.periodTo)
+    )
 
   def createUserAccount(account: MonoAccount): IO[SQLException, Long] =
-    run(query[MonoAccount].insertValue(lift(account)))
+    run(
+      query[MonoAccount].insertValue(lift(account))
+        .onConflictIgnore(_.id)
+    )
 
 object MonoRepoLive:
   val layer: ZLayer[Quill.Postgres[SnakeCase], Nothing, MonoRepo] =
