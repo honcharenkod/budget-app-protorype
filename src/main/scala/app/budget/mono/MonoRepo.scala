@@ -1,7 +1,7 @@
 package app.budget.mono
 
 import app.budget.mono.model.api.MonoAccount
-import app.budget.mono.model.db.{NewRawMonoStatement, RawMonoStatement}
+import app.budget.mono.model.db.NewRawMonoStatement
 import zio.IO
 
 import java.sql.SQLException

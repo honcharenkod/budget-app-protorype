@@ -1,7 +1,6 @@
 package app.budget.mono.model.db
 
 import zio.json.ast.Json
-import zio.schema.{DeriveSchema, Schema}
 
 import java.time.Instant
 

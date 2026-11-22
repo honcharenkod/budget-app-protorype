@@ -5,7 +5,7 @@ import Transactor.transactional
 import app.budget.config.Configuration
 import app.budget.domain.DateRange
 import app.budget.mono.model.api.StatementItem
-import app.budget.mono.model.db.{NewRawMonoStatement, RawMonoStatement}
+import app.budget.mono.model.db.NewRawMonoStatement
 import zio.*
 import zio.json.EncoderOps
 

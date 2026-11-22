@@ -1,12 +1,11 @@
 package app.budget.mono
 
 import app.budget.mono.model.api.MonoAccount
-import app.budget.mono.model.db.{NewRawMonoStatement, RawMonoStatement}
+import app.budget.mono.model.db.NewRawMonoStatement
 import io.getquill.jdbczio.Quill
 import zio.{IO, ZIO, ZLayer}
 import io.getquill.*
 import org.postgresql.util.PGobject
-import zio.json.DecoderOps
 import zio.json.ast.Json
 
 import java.sql.{SQLException, Types}
@@ -25,13 +24,13 @@ final case class MonoRepoLive(quill: Quill.Postgres[SnakeCase])
         row.setObject(index, pg)
     )
 
-  private given Decoder[Json] =
-    decoder((index, row, _) =>
-      row
-        .getString(index)
-        .fromJson[Json]
-        .fold(err => throw IllegalStateException(err), identity)
-    )
+//  private given Decoder[Json] =
+//    decoder((index, row, _) =>
+//      row
+//        .getString(index)
+//        .fromJson[Json]
+//        .fold(err => throw IllegalStateException(err), identity)
+//    )
 
   def insertRawStatement(raw: NewRawMonoStatement): IO[SQLException, Long] =
     run(

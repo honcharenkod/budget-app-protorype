@@ -3,7 +3,6 @@ package app.budget.mono
 import app.budget.config.Configuration
 import app.budget.domain.DateRange
 import app.budget.mono.model.api.{MonoClientInfo, StatementItem}
-import app.budget.mono.model.db.RawMonoStatement
 import zio.*
 import zio.http.*
 
