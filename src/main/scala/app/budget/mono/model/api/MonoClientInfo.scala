@@ -1,5 +1,6 @@
-package app.budget.mono.model
+package app.budget.mono.model.api
 
+import app.budget.mono.model.api.MonoAccount
 import app.budget.mono.model.*
 import zio.schema.{DeriveSchema, Schema}
 

@@ -1,4 +1,4 @@
-package app.budget.mono.model
+package app.budget.mono.model.api
 
 case class MonoJar(
     id: String,

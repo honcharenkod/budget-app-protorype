@@ -3,10 +3,9 @@ package app.budget.mono
 import app.budget.db.Transactor
 import Transactor.transactional
 import app.budget.config.Configuration
+import app.budget.domain.DateRange
 import app.budget.mono.model.api.StatementItem
-import app.budget.mono.model.domain.{NewRawMonoStatement, RawMonoStatement}
-import app.budget.utils.TimeUtils
-import app.budget.utils.TimeUtils.DateRange
+import app.budget.mono.model.db.{NewRawMonoStatement, RawMonoStatement}
 import zio.*
 import zio.json.EncoderOps
 
@@ -17,17 +16,11 @@ class MonoServiceLive(
 )(using Transactor)
     extends MonoService:
 
-  final case class MonoStatementHelper(
-      payload: StatementItem,
-      range: DateRange,
-      accountId: String
-  )
-
-  def importUserData: Task[Long] =
+  def importAccountsAndStatements: Task[Long] =
     for
       clientInfo <- client.getClientInfo
+      range = DateRange.ending(length = config.monoStatementMaxDuration)
       statements <- ZIO.foreach(clientInfo.accounts) { account =>
-        val range = TimeUtils.generatePeriodInPast(config.monoStatementMaxDuration)
         for
           items <- client.getPersonalStatement(account.id, range)
           payload <- ZIO
@@ -40,10 +33,10 @@ class MonoServiceLive(
           payload = payload
         )
       }
-      accounts = ZIO.foreach(clientInfo.accounts)(repo.createUserAccount)
+      accounts = ZIO.foreach(clientInfo.accounts)(repo.insertAccountIfAbsent)
       rawStatement =
         ZIO
-          .foreach(statements)(repo.saveRaw)
+          .foreach(statements)(repo.insertRawStatement)
       res <- accounts.zipLeft(rawStatement).transactional
     yield res.sum
 

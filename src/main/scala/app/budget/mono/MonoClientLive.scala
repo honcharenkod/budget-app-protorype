@@ -1,18 +1,17 @@
 package app.budget.mono
 
 import app.budget.config.Configuration
-import app.budget.mono.model.api.StatementItem
-import app.budget.mono.model.MonoClientInfo
-import app.budget.mono.model.domain.RawMonoStatement
-import app.budget.utils.TimeUtils.DateRange
+import app.budget.domain.DateRange
+import app.budget.mono.model.api.{MonoClientInfo, StatementItem}
+import app.budget.mono.model.db.RawMonoStatement
 import zio.*
 import zio.http.*
 
-class MonoClientLive(client: Client, apiKey: String) extends MonoClient:
+class MonoClientLive(client: Client, token: String) extends MonoClient:
   private val api =
     client
       .url(url"https://api.monobank.ua")
-      .addHeader("X-Token", apiKey)
+      .addHeader("X-Token", token)
 
   def getClientInfo: Task[MonoClientInfo] =
     for
@@ -32,7 +31,7 @@ class MonoClientLive(client: Client, apiKey: String) extends MonoClient:
     yield body
 
 object MonoClientLive:
-  val layer: ZLayer[Client & Configuration, Nothing, MonoClientLive] =
+  val layer: ZLayer[Client & Configuration, Nothing, MonoClient] =
     ZLayer.fromFunction((client: Client, conf: Configuration) =>
       new MonoClientLive(client, conf.monoToken)
     )

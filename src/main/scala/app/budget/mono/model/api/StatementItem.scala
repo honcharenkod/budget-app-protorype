@@ -1,6 +1,6 @@
 package app.budget.mono.model.api
 
-import app.budget.mono.model.domain.RawMonoStatement
+import app.budget.mono.model.db.RawMonoStatement
 import zio.json.{DeriveJsonCodec, JsonCodec}
 import zio.schema.{DeriveSchema, Schema}
 

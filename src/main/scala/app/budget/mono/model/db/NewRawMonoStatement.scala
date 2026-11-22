@@ -1,4 +1,4 @@
-package app.budget.mono.model.domain
+package app.budget.mono.model.db
 
 import zio.json.ast.Json
 

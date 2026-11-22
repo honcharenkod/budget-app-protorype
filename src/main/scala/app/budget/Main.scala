@@ -18,7 +18,7 @@ object Main extends ZIOAppDefault:
     val program =
       for
         monoService <- ZIO.service[MonoService]
-        _ <- monoService.importUserData
+        _ <- monoService.importAccountsAndStatements
       yield ()
 
     program.provide(
