@@ -6,6 +6,7 @@ import app.budget.config.Configuration
 import app.budget.domain.DateRange
 import app.budget.mono.model.api.StatementItem
 import app.budget.mono.model.db.RawMonoStatement
+import io.getquill.JsonbValue
 import zio.*
 import zio.json.EncoderOps
 
@@ -30,7 +31,7 @@ class MonoServiceLive(
           accountId = account.id,
           periodFrom = range.from,
           periodTo = range.to,
-          payload = payload
+          payload = JsonbValue(payload)
         )
       }
       accounts = ZIO.foreach(clientInfo.accounts)(repo.insertAccountIfAbsent)

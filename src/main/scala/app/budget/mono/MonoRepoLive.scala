@@ -6,32 +6,12 @@ import app.budget.mono.model.db.RawMonoStatement
 import io.getquill.jdbczio.Quill
 import zio.{IO, ZIO, ZLayer}
 import io.getquill.*
-import org.postgresql.util.PGobject
-import zio.json.ast.Json
 
-import java.sql.{SQLException, Types}
+import java.sql.SQLException
 
 final case class MonoRepoLive(quill: Quill.Postgres[SnakeCase])
     extends MonoRepo:
   import quill._
-
-  private given Encoder[Json] =
-    encoder(
-      Types.OTHER,
-      (index, value, row) =>
-        val pg = PGobject()
-        pg.setType("jsonb")
-        pg.setValue(value.toString)
-        row.setObject(index, pg)
-    )
-
-//  private given Decoder[Json] =
-//    decoder((index, row, _) =>
-//      row
-//        .getString(index)
-//        .fromJson[Json]
-//        .fold(err => throw IllegalStateException(err), identity)
-//    )
 
   def insertRawStatement(raw: RawMonoStatement.Insert): IO[SQLException, Long] =
     run(

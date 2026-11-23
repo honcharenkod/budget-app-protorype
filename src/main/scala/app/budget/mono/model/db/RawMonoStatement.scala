@@ -1,5 +1,6 @@
 package app.budget.mono.model.db
 
+import io.getquill.JsonbValue
 import zio.json.ast.Json
 
 import java.time.Instant
@@ -10,7 +11,7 @@ case class RawMonoStatement(
     periodFrom: Instant,
     periodTo: Instant,
     fetchedAt: Instant,
-    payload: Json
+    payload: JsonbValue[Json]
 )
 
 object RawMonoStatement:
@@ -18,5 +19,5 @@ object RawMonoStatement:
       accountId: String,
       periodFrom: Instant,
       periodTo: Instant,
-      payload: Json
+      payload: JsonbValue[Json]
   )
