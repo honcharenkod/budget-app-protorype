@@ -5,7 +5,7 @@ import Transactor.transactional
 import app.budget.config.Configuration
 import app.budget.domain.DateRange
 import app.budget.mono.model.api.StatementItem
-import app.budget.mono.model.db.NewRawMonoStatement
+import app.budget.mono.model.db.RawMonoStatement
 import zio.*
 import zio.json.EncoderOps
 
@@ -26,7 +26,7 @@ class MonoServiceLive(
           payload <- ZIO
             .fromEither(items.toJsonAST)
             .mapError(err => new RuntimeException(s"JSON encode failed: $err"))
-        yield NewRawMonoStatement(
+        yield RawMonoStatement.Insert(
           accountId = account.id,
           periodFrom = range.from,
           periodTo = range.to,

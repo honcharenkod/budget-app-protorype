@@ -12,3 +12,11 @@ case class RawMonoStatement(
     fetchedAt: Instant,
     payload: Json
 )
+
+object RawMonoStatement:
+  case class Insert(
+      accountId: String,
+      periodFrom: Instant,
+      periodTo: Instant,
+      payload: Json
+  )
