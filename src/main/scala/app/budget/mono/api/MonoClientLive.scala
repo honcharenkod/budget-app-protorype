@@ -19,7 +19,7 @@ class MonoClientLive(client: Client, monoConfig: MonoConfig) extends MonoClient:
       response <- api
         .batched(Request.get(s"/personal/client-info"))
         .mapError(Transport(_))
-        .timeoutFail(Timeout)(300.seconds)
+        .timeoutFail(Timeout(MonoApi.RequestTimeout))(MonoApi.RequestTimeout)
       body <- validateResponse(response)
       info <-
         ZIO
@@ -39,7 +39,7 @@ class MonoClientLive(client: Client, monoConfig: MonoConfig) extends MonoClient:
           )
         )
         .mapError(Transport(_))
-        .timeoutFail(Timeout)(300.seconds)
+        .timeoutFail(Timeout(MonoApi.RequestTimeout))(MonoApi.RequestTimeout)
       body <- validateResponse(response)
       info <-
         ZIO

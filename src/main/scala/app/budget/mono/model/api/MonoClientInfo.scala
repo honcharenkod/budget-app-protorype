@@ -11,7 +11,7 @@ case class MonoClientInfo(
     webHookUrl: String,
     permissions: String,
     accounts: List[MonoAccount],
-    jars: List[MonoJar]
+    jars: List[MonoJar] = Nil
 ) derives JsonDecoder
 
 object MonoClientInfo:

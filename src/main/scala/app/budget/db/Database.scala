@@ -11,7 +11,7 @@ object Database:
     ZLayer.scoped {
       for
         cfg <- ZIO.service[PostgresConfig]
-        ds  <- ZIO.fromAutoCloseable(ZIO.attempt {
+        ds <- ZIO.fromAutoCloseable(ZIO.attempt {
           val hc = HikariConfig()
           hc.setJdbcUrl(cfg.url)
           hc.setUsername(cfg.user)

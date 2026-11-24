@@ -21,7 +21,9 @@ class MonoServiceLive(
   def importAccountsAndStatements: Task[Long] =
     for
       clientInfo <- client.getClientInfo
-      range = DateRange.ending(length = config.monobank.statementRequestDuration)
+      range = DateRange.ending(length =
+        config.monobank.statementRequestDuration
+      )
       statements <- ZIO.foreach(clientInfo.accounts) { account =>
         for
           items <- client.getPersonalStatement(account.id, range)
