@@ -17,7 +17,8 @@ enum MonoApiError(message: String, cause: Throwable | Null = null)
 
   case Unexpected(status: Status, body: String)
       extends MonoApiError(
-        s"unexpected error with status $status and body $body"
+        s"unexpected error with status $status"
       ) // 400, 404, 5xx
 
-  case Transport(cause: Throwable) extends MonoApiError(s"transport error", cause)
+  case Transport(cause: Throwable)
+      extends MonoApiError(s"transport error", cause)

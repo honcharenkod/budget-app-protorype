@@ -1,7 +1,6 @@
 package app.budget.mono.model.api
 
-import zio.json.{DeriveJsonCodec, JsonCodec}
-import zio.schema.{DeriveSchema, Schema}
+import zio.json.JsonDecoder
 
 final case class StatementItem(
     id: String,
@@ -22,11 +21,4 @@ final case class StatementItem(
     counterEdrpou: Option[String] = None,
     counterIban: Option[String] = None,
     counterName: Option[String] = None
-)
-
-object StatementItem:
-  implicit val schema: Schema[StatementItem] =
-    DeriveSchema.gen[StatementItem]
-
-  implicit val codec: JsonCodec[StatementItem] =
-    DeriveJsonCodec.gen[StatementItem]
+) derives JsonDecoder

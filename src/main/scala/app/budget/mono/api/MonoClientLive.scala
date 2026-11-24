@@ -3,10 +3,11 @@ package app.budget.mono.api
 import app.budget.config.{Configuration, MonoConfig}
 import app.budget.domain.DateRange
 import app.budget.mono.api.MonoApiError.*
-import app.budget.mono.model.api.{MonoClientInfo, StatementItem}
+import app.budget.mono.model.api.MonoClientInfo
 import zio.*
 import zio.http.*
 import zio.json.*
+import zio.json.ast.Json
 
 class MonoClientLive(client: Client, monoConfig: MonoConfig) extends MonoClient:
   private val api =
@@ -30,7 +31,7 @@ class MonoClientLive(client: Client, monoConfig: MonoConfig) extends MonoClient:
   def getPersonalStatement(
       accountId: String,
       range: DateRange
-  ): IO[MonoApiError, List[StatementItem]] =
+  ): IO[MonoApiError, Json] =
     for
       response <- api
         .batched(
@@ -43,7 +44,7 @@ class MonoClientLive(client: Client, monoConfig: MonoConfig) extends MonoClient:
       body <- validateResponse(response)
       info <-
         ZIO
-          .fromEither(body.fromJson[List[StatementItem]])
+          .fromEither(body.fromJson[Json])
           .mapError(e => Decode(body, e))
     yield info
 

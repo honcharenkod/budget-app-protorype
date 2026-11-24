@@ -5,11 +5,9 @@ import app.budget.db.Transactor
 import app.budget.db.Transactor.transactional
 import app.budget.domain.DateRange
 import app.budget.mono.api.MonoClient
-import app.budget.mono.model.api.StatementItem
 import app.budget.mono.model.db.RawMonoStatement
 import io.getquill.JsonbValue
 import zio.*
-import zio.json.EncoderOps
 
 class MonoServiceLive(
     client: MonoClient,
@@ -26,15 +24,12 @@ class MonoServiceLive(
       )
       statements <- ZIO.foreach(clientInfo.accounts) { account =>
         for
-          items <- client.getPersonalStatement(account.id, range)
-          payload <- ZIO
-            .fromEither(items.toJsonAST)
-            .mapError(err => new RuntimeException(s"JSON encode failed: $err"))
+          itemsJson <- client.getPersonalStatement(account.id, range)
         yield RawMonoStatement.Insert(
           accountId = account.id,
           periodFrom = range.from,
           periodTo = range.to,
-          payload = JsonbValue(payload)
+          payload = JsonbValue(itemsJson)
         )
       }
       accounts = ZIO.foreach(clientInfo.accounts)(repo.insertAccountIfAbsent)
