@@ -1,4 +1,4 @@
-package app.budget.mono
+package app.budget.mono.api
 
 import zio.*
 

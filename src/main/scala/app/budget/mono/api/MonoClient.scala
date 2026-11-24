@@ -1,12 +1,12 @@
-package app.budget.mono
+package app.budget.mono.api
 
 import app.budget.domain.DateRange
 import app.budget.mono.model.api.{MonoClientInfo, StatementItem}
-import zio.Task
+import zio.IO
 
 trait MonoClient:
-  def getClientInfo: Task[MonoClientInfo]
+  def getClientInfo: IO[MonoApiError, MonoClientInfo]
   def getPersonalStatement(
       accountId: String,
       range: DateRange
-  ): Task[List[StatementItem]]
+  ): IO[MonoApiError, List[StatementItem]]

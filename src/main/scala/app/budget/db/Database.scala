@@ -1,8 +1,8 @@
 package app.budget.db
 
 import app.budget.config.PostgresConfig
-import zio._
-import com.zaxxer.hikari._
+import com.zaxxer.hikari.*
+import zio.*
 
 import javax.sql.DataSource
 

@@ -1,9 +1,9 @@
 package app.budget.config
 
-import app.budget.mono.MonoApi
+import app.budget.mono.api.MonoApi
 import zio.*
-import zio.config.{ConfigOps, toKebabCase}
 import zio.config.magnolia.{DeriveConfig, deriveConfig}
+import zio.config.{ConfigOps, toKebabCase}
 import zio.http.URL
 
 case class MonoConfig(

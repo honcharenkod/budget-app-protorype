@@ -1,8 +1,9 @@
 package app.budget
 
-import app.budget.config.{Configuration, PostgresConfig}
+import app.budget.config.Configuration
 import app.budget.db.{Database, TransactorLive}
 import app.budget.mono.*
+import app.budget.mono.api.MonoClientLive
 import io.getquill.SnakeCase
 import io.getquill.jdbczio.Quill
 import zio.*

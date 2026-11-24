@@ -1,8 +1,8 @@
 package app.budget.config
 
 import zio.*
-import zio.config.magnolia.*
 import zio.config.*
+import zio.config.magnolia.*
 
 case class PostgresConfig(
     url: String,

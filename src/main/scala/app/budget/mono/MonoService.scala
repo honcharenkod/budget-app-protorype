@@ -1,6 +1,6 @@
 package app.budget.mono
 
-import zio._
+import zio.*
 
 trait MonoService:
   def importAccountsAndStatements: Task[Long]

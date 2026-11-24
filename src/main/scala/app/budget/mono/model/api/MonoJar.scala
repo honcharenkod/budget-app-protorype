@@ -1,5 +1,7 @@
 package app.budget.mono.model.api
 
+import zio.json.JsonDecoder
+
 case class MonoJar(
     id: String,
     sendId: String,
@@ -8,4 +10,4 @@ case class MonoJar(
     currencyCode: Int,
     balance: Long,
     goal: Long
-)
+) derives JsonDecoder
