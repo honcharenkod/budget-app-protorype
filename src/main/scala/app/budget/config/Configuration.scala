@@ -1,18 +1,24 @@
 package app.budget.config
 
 import zio.*
-import zio.config.magnolia.deriveConfig
-import zio.config.{ConfigOps, toKebabCase}
+import zio.config.magnolia.*
+import zio.config.*
 
-case class PostgresConfig(url: String, user: String, password: String, poolSize: Int)
+case class PostgresConfig(
+    url: String,
+    user: String,
+    password: String,
+    poolSize: Int
+)
 
 case class Configuration(
-    monoToken: String,
-    monoStatementMaxDuration: Duration,
+    monobank: MonoConfig,
     postgres: PostgresConfig
 )
 
 object Configuration:
+  private given DeriveConfig[MonoConfig] = DeriveConfig(MonoConfig.config)
+
   val config: Config[Configuration] =
     deriveConfig[Configuration].mapKey(toKebabCase)
 

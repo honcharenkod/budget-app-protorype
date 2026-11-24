@@ -13,6 +13,6 @@ object DateRange:
       length: Duration
   ): DateRange =
     DateRange(
-      from = at.minusNanos(length.toNanos),
+      from = at.minusSeconds(length.toSeconds),
       to = at
     )
