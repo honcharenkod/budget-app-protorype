@@ -9,6 +9,7 @@ lazy val root = (project in file("."))
 val zioVersion = "2.1.27"
 val zioConfig = "4.1.2"
 val zioLogging = "2.5.5"
+val zioTest = "2.1.27"
 
 libraryDependencies ++= Seq(
   "dev.zio" %% "zio" % zioVersion,
@@ -16,14 +17,21 @@ libraryDependencies ++= Seq(
   "dev.zio" %% "zio-config" % zioConfig,
   "dev.zio" %% "zio-config-typesafe" % zioConfig,
   "dev.zio" %% "zio-config-magnolia" % zioConfig,
-  "dev.zio" %% "zio-http" % "3.11.6",
+  "dev.zio" %% "zio-http" % "3.12.0",
+  "dev.zio" %% "zio-streams" % "2.1.27",
 
-  // Quill 4.9.0 is built against zio-json 0.10.x; we run it on 1.0.0 (required by zio-http).
+    // Quill 4.9.0 is built against zio-json 0.10.x; we run it on 1.0.0 (required by zio-http).
   // JsonbValue only touches zio-json's public API: insert + read verified working on 1.0.0.
   ("dev.zio" %% "quill-jdbc-zio" % "4.9.0").exclude("dev.zio", "zio-json_3"),
-  "org.postgresql" % "postgresql" % "42.7.14",
+  "org.postgresql" % "postgresql" % "42.7.15",
 
   "org.slf4j" % "slf4j-api" % "2.0.20",
   "dev.zio" %% "zio-logging" % zioLogging,
-  "dev.zio" %% "zio-logging-slf4j2-bridge" % zioLogging
+  "dev.zio" %% "zio-logging-slf4j2-bridge" % zioLogging,
+
+  "dev.zio" %% "zio-test" % zioTest % Test,
+  "dev.zio" %% "zio-test-sbt" % zioTest % Test,
+  "dev.zio" %% "zio-test-magnolia" % zioTest % Test
 )
+
+testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
