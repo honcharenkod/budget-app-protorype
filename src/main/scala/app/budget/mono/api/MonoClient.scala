@@ -6,8 +6,8 @@ import zio.IO
 import zio.json.ast.Json
 
 trait MonoClient:
-  def getClientInfo: IO[MonoApiError, MonoClientInfo]
+  def getClientInfo: IO[MonoError, MonoClientInfo]
   def getPersonalStatement(
       accountId: String,
       range: DateRange
-  ): IO[MonoApiError, Json]
+  ): IO[MonoError, Json]

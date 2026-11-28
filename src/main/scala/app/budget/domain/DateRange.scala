@@ -24,7 +24,7 @@ object DateRange:
     )
 
 
-  def seq(start: Instant, end: Instant, delay: Duration): List[DateRange] =
+  def split(start: Instant, end: Instant, delay: Duration): List[DateRange] =
     @tailrec
     def nextRange(from: Instant, acc: ListBuffer[DateRange] = ListBuffer.empty): List[DateRange] =
       if (start.minusSeconds(delay.getSeconds) <= end)

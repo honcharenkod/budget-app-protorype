@@ -3,10 +3,11 @@ package app.budget.mono
 import app.budget.config.Configuration
 import app.budget.db.Transactor
 import app.budget.domain.DateRange
-import app.budget.mono.api.MonoClient
+import app.budget.mono.api.{MonoClient, MonoError}
+import app.budget.mono.api.MonoError.{OutOfHistory, RateLimited}
 import app.budget.mono.model.db.RawMonoStatement
 import io.getquill.JsonbValue
-import zio.*
+import zio.{Schedule, *}
 import zio.json.ast.Json
 import zio.stream.*
 
@@ -19,47 +20,52 @@ class MonoServiceLive(
 )(using Transactor)
     extends MonoService:
 
+  private val period = config.monobank.statementRequestDuration
+  private val delay = config.monobank.statementRequestDelay
+  private val retryOnRateLimit =
+    Schedule.spaced(delay) &&
+      Schedule.recurs(3) &&
+      Schedule.recurWhile(_ == RateLimited)
+
   def importAccountsAndStatements: Task[Long] =
     for
       clientInfo <- client.getClientInfo
-      statements <- ZStream
+      _ <- ZStream
         .fromIterable(clientInfo.accounts)
-        .mapZIO(account => importHistory(account.id).runCollect)
-        .runCollect
+        .flatMap(account =>
+          importFullHistory(account.id, startDate = Instant.now())
+        )
+        .runDrain
       res <- ZIO.foreach(clientInfo.accounts)(repo.insertAccountIfAbsent)
     yield res.sum
 
-  def importHistory(
+  private def importRange(
       accountId: String,
-      startDate: Instant = Instant.now(),
-      endDate: Option[Instant] = None
-  ) =
-    endDate match
-      case Some(end) =>
-        ZStream
-          .fromIterable(
-            DateRange
-              .seq(startDate, end, config.monobank.statementRequestDuration)
-          )
-          .mapZIO(importStatement(accountId, _))
-          .schedule(Schedule.spaced(config.monobank.statementRequestDelay))
-      case None =>
-        val range =
-          DateRange.ending(startDate, config.monobank.statementRequestDuration)
-        ZStream
-          .unfoldZIO(range) { range =>
-            importStatement(accountId, range).fold(
-              e => None,
-              s =>
-                Some(
-                  s -> range.shiftBack(config.monobank.statementRequestDuration)
-                )
-            )
-          }
-          .schedule(Schedule.spaced(config.monobank.statementRequestDelay))
-          .take(10)
+      startDate: Instant,
+      endDate: Instant
+  ): Stream[Throwable, Json] =
+    ZStream
+      .fromIterable(DateRange.split(startDate, endDate, period))
+      .mapZIO(importStatement(accountId, _).retry(retryOnRateLimit))
+      .schedule(Schedule.spaced(delay))
 
-  def importStatement(accountId: String, range: DateRange): Task[Json] =
+  private def importFullHistory(
+      accountId: String,
+      startDate: Instant
+  ): Stream[Throwable, Json] =
+    val range =
+      DateRange.ending(startDate, period)
+    ZStream
+      .unfoldZIO(range) { range =>
+        importStatement(accountId, range)
+          .retry(retryOnRateLimit)
+          .map(json => json -> range.shiftBack(period))
+          .asSome
+          .catchSome { case OutOfHistory => ZIO.none }
+      }
+      .schedule(Schedule.spaced(delay))
+
+  private def importStatement(accountId: String, range: DateRange): Task[Json] =
     for
       statement <- client.getPersonalStatement(accountId, range)
       _ <- repo.insertRawStatement(
