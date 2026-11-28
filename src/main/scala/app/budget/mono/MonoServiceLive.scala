@@ -39,16 +39,6 @@ class MonoServiceLive(
       res <- ZIO.foreach(clientInfo.accounts)(repo.insertAccountIfAbsent)
     yield res.sum
 
-  private def importRange(
-      accountId: String,
-      startDate: Instant,
-      endDate: Instant
-  ): Stream[Throwable, Json] =
-    ZStream
-      .fromIterable(DateRange.split(startDate, endDate, period))
-      .mapZIO(importStatement(accountId, _).retry(retryOnRateLimit))
-      .schedule(Schedule.spaced(delay))
-
   private def importFullHistory(
       accountId: String,
       startDate: Instant
